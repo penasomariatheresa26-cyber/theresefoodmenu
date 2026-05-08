@@ -2,20 +2,24 @@ import express from "express";
 import mysql from "mysql2/promise";
 import path from "path";
 import { fileURLToPath } from "url";
-import cors from "cors"; // Added for API access
+import cors from "cors";
 import dotenv from "dotenv";
 
-dotenv.config(); // Ensure variables are loaded
+dotenv.config();
+
+// CRITICAL: Check if variables exist before starting
+if (!process.env.MYSQL_HOST) {
+  console.error("❌ ERROR: MYSQL_HOST is not defined in environment variables.");
+}
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 1. Middlewares
-app.use(cors()); // Allows your React app to fetch data
+app.use(cors());
 app.use(express.json());
 
-// 2. Database pool
+// Database pool - Added connection timeout and charset for better stability
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
@@ -23,21 +27,22 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
   port: Number(process.env.MYSQL_PORT) || 3306,
   ssl: {
-    rejectUnauthorized: false // Required for most cloud DBs like Aiven/Railway
+    rejectUnauthorized: false 
   },
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  enableKeepAlive: true, // Prevents "connection lost" errors
-  keepAliveInitialDelay: 10000
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10000,
+  connectTimeout: 10000 // 10 seconds timeout
 });
 
-// 3. API Routes (Must be BEFORE static files)
+// API Routes
 app.get("/api/db-test", async (req, res) => {
+  let connection;
   try {
-    const connection = await pool.getConnection(); // Get connection to check pool health
+    connection = await pool.getConnection(); 
     const [rows] = await connection.query("SELECT NOW() AS now");
-    connection.release(); // Always release back to pool
     
     res.json({
       success: true,
@@ -51,14 +56,15 @@ app.get("/api/db-test", async (req, res) => {
       error: "Database Connection Error",
       details: err.message
     });
+  } finally {
+    if (connection) connection.release(); // Proper cleanup
   }
 });
 
-// 4. Serve React/Vite website
-// Ensure the 'dist' folder exists after running 'npm run build'
+// Serve React/Vite website
 app.use(express.static(path.join(__dirname, "dist")));
 
-// 5. React fallback route (Must be the very last route)
+// React fallback route
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
@@ -66,5 +72,5 @@ app.get("*", (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
