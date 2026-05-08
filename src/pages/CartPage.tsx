@@ -217,23 +217,23 @@ export default function CartPage({ onNavigate }: CartPageProps) {
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary outline-none bg-white"
                       >
                         <option value="">Select Barangay</option>
-                        <option value="Poblacion">Poblacion</option>
+                        <option value="Poblacion">Poblacio</option>
                         <option value="Ambacon">Ambacon</option>
-                        <option value="Bangon">Bangon</option>
-                        <option value="Cabuynan">Cabuynan</option>
+                        <option value="Bangon">Bangcas A</option>
+                        <option value="Cabuynan">Bangcas B</option>
                         <option value="Calag-itan">Calag-itan</option>
-                        <option value="Canamucan">Canamucan</option>
-                        <option value="Canap-acan">Canap-acan</option>
-                        <option value="Mag-aso">Mag-aso</option>
-                        <option value="Magtino">Magtino</option>
-                        <option value="Nahulid">Nahulid</option>
-                        <option value="Otikon">Otikon</option>
-                        <option value="Panalaron">Panalaron</option>
+                        <option value="Canamucan">Ingan</option>
+                        <option value="Canap-acan">Canipaan</option>
+                        <option value="Mag-aso">San Pedro Island</option>
+                        <option value="Magtino">San Pablo Island</option>
+                        <option value="Nahulid">Matin-ao</option>
+                        <option value="Otikon">Panalaron</option>
+                        <option value="Panalaron">Tawog</option>
                         <option value="San Vicente">San Vicente</option>
                         <option value="Tahusan">Tahusan</option>
                         <option value="Talisay">Talisay</option>
                         <option value="Toptop">Toptop</option>
-                        <option value="Tugawe">Tugawe</option>
+                        <option value="Tugawe">libas</option>
                       </select>
                     </div>
                   </div>
